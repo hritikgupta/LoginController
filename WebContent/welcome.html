@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<meta charset="UTF-8">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+
+<title>Welcome Page</title>
+</head>
+<body onload="onLoad()">
+<h1>Welcome, <span id="showUsername"></span></h1>
+<hr>
+<p>
+	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
+	in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt 
+	mollit anim id est laborum.
+</p>
+
+<form>
+<input type="submit" value="Logout" id="logoutButton">
+</form>
+
+</body>
+
+<script type="text/javascript">
+
+document.addEventListener('DOMContentLoaded', function () {
+	
+	var email = localStorage.getItem("email");
+	if(email != null){
+		getUsername(email);
+	}
+	
+	function getUsername(email){
+		
+		var request = new XMLHttpRequest();
+		var url = "welcome";
+		var data = "email=" + email;
+		
+		request.open("POST", url, true);
+		request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");		
+		request.send(data);
+		
+		request.onreadystatechange = function () {
+		  var DONE = 4; // readyState 4 means the request is done.
+		  var OK = 200; // status 200 is a successful return.
+		  if (request.readyState === DONE) {
+		    if (request.status === OK) {
+		    	
+		    	document.getElementById("showUsername").innerHTML = request.responseText;
+		    	
+		    } else {
+				alert("error");
+				console.log('Error: ' + request.status); // An error occurred during the request.
+		    }
+		  }
+		};
+	}
+	
+	
+	document.getElementById("logoutButton").onclick = function(e) {
+		
+		e.preventDefault();
+
+		var request = new XMLHttpRequest();
+		var url = "logout";
+		request.open("GET", url, true);
+		request.send(null);
+		
+		request.onreadystatechange = function () {
+		  var DONE = 4; // readyState 4 means the request is done.
+		  var OK = 200; // status 200 is a successful return.
+		  if (request.readyState === DONE) {
+		    if (request.status === OK) {
+		    	if(request.responseText == "True"){
+		    		localStorage.removeItem("email");
+		    		window.location="login.html";
+		    	} else{
+		    		alert("Oops, some error occurred!");
+		    	}
+		    } else {
+				alert("error");
+				console.log('Error: ' + request.status); // An error occurred during the request.
+		    }
+		  }
+		};
+			
+	};
+		
+});
+
+
+
+
+</script>
+
+</html>

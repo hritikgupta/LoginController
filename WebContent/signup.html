@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Signup Page</title>
+</head>
+<body>
+
+<form id="signupForm" method="post">
+	<pre>
+	Enter username:		<input type="text" name="uname" id="uname" placeholder="username"><br/>
+	Enter email:		<input type="email" name="email" id="email" placeholder="abc@test.com"><br/>	
+	Enter password:		<input type="password" name="pass" id="pass" placeholder="password"> <br/>
+	
+	<input type="submit" value="Sign Up" id="signupButton">
+	</pre>
+</form>
+Already signed up? <a href="login.html"><button>Login</button></a>
+
+<script type="text/javascript">
+
+function validateInput() {
+	// trim values before comparing
+	// using let instead of var
+	
+	// divide code to html, css, js
+	
+	  var err = 0;	
+	  var uname = document.getElementById("uname").value;
+	  var pass = document.getElementById("pass").value;
+	  var email = document.getElementById("email").value;
+	  if (uname == "") {
+	    alert("Name must be filled out");
+	    err++;
+	  } else if(pass == ""){
+		  alert("Set a password for your account");
+		  err++;
+	  } else if(email == ""){
+		  alert("Email cant be empty!");
+		  err++;
+	  }
+	  return (err == 0);
+}
+
+
+	document.getElementById("signupButton").onclick = function(e) {
+		
+		// do an html encoding to inputs	
+		
+		// e.preventDefault();
+		
+		if(validateInput()){
+			var uname = document.getElementById("uname").value;
+			var pass = document.getElementById("pass").value;
+			var email = document.getElementById("email").value;
+			// var data = "uname=" + uname + "&pass=" + pass + "&email=" + email;
+			
+			var data = {
+			 	"uname" : uname,
+			 	"pass": pass,
+			 	"email": email
+			};
+			
+			var request = new XMLHttpRequest();
+			var url = "signup";
+			request.open("POST", url, true);
+			request.setRequestHeader("Content-type", "text/json");
+			request.send(JSON.stringify(data));
+			
+			request.onreadystatechange = function () {
+			  var DONE = 4; // readyState 4 means the request is done.
+			  var OK = 200; // status 200 is a successful return.
+			  
+			  // callback function
+			  if (request.readyState === DONE) {
+			    if (request.status === OK) {
+			    	if(request.responseText == "True"){
+				    	alert("User registered successfully");
+			    		document.getElementById("signupForm").reset();
+				      	console.log(request.responseText);
+			    	} else{
+			    		alert(request.responseText);
+			    	}
+			    } else {
+					alert("error");
+					console.log('Error: ' + request.status); // An error occurred during the request.
+			    }
+			  }
+			};
+		}
+		
+	};
+</script> 
+
+
+</body>
+</html>

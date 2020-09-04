@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login page</title>
+</head>
+<body>
+
+<form id="loginForm">
+	<pre>
+	Enter email		<input type="text" name="email" id="email"><br/>
+	Enter password		<input type="password" name="pass" id="pass"> <br/>
+	
+	<input type="submit" value="Login" id="loginButton">
+	</pre>
+</form>
+<span id="ajaxGetUserServletResponse" style="color: red;"></span>
+
+New here? <a href="signup.html"><button>Signup</button></a>
+
+<script type="text/javascript">
+
+
+function validateInput() {
+	  var err = 0;	
+	  var email = document.getElementById("email").value;
+	  var pass = document.getElementById("pass").value;
+	  if(email == ""){
+		  alert("Enter your email!");
+		  err++;
+	  }	else if(pass == ""){
+		  alert("Enter account password!");
+		  err++;
+	  } 
+	  return (err == 0);
+}
+
+// TODO validation of email at the server end
+
+
+	document.getElementById("loginButton").onclick = function(e) {
+		
+		e.preventDefault();
+		
+		if(validateInput()){
+			var pass = document.getElementById("pass").value;
+			var email = document.getElementById("email").value;
+			var data = "email=" + email + "&pass=" + pass;
+			
+			var request = new XMLHttpRequest();
+			var url = "login";
+			request.open("POST", url, true);
+			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			request.send(data);
+			
+			request.onreadystatechange = function () {
+			  var DONE = 4; // readyState 4 means the request is done.
+			  var OK = 200; // status 200 is a successful return.
+			  if (request.readyState === DONE) {
+			    if (request.status === OK) {
+			    	if(request.responseText == "True"){			    		
+			    		
+			    		localStorage.setItem("email", email);
+			    		// TODO instead do session.setAttribute in LoginServlet
+			    		
+			    		window.location="welcome.html";
+			    	} else{
+			    		document.getElementById("ajaxGetUserServletResponse").innerHTML = "Wrong username or password";
+			    	}
+			    } else {
+					alert("error");
+					console.log('Error: ' + request.status); // An error occurred during the request.
+			    }
+			  }
+			};
+		}
+		
+	};
+</script> 
+
+
+</body>
+</html>
+
